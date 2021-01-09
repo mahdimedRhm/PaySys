@@ -1,42 +1,45 @@
 <template>
   <div class="home">
-    <div>
+    <div action="action_page.php" method="post">
       <div class="container">
         <label for="uname"><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" v-model="user.email" required>
+        <input type="text" placeholder="Enter email" v-model="user.email"  required>
+
+        <label for="uname"><b>Name</b></label>
+        <input type="text" placeholder="Enter Name" v-model="user.name" required>
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" v-model="user.password" required>
+        <input type="password" placeholder="Enter password" v-model="user.password" required>
 
-        <button @click="login" type="submit">Login</button>
-        <button @click="registerPage()">Register</button>
+        <label for="psw"><b>Confirm password</b></label>
+        <input type="password" placeholder="Enter password"  required>
+
+        <button @click="createAccount()">Create an account</button>
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
         <button type="button" class="cancelbtn">Cancel</button>
+        <span class="psw">Forgot password?</span>
       </div>
     </div>
-  </div>
+    <button @click="loginPage()" >Login</button>
+    </div>
 </template>
-<script>
-// @ is an alias to /src
 
+<script>
 export default {
-  name: 'Home',
   data() {
     return {
-      user:{}
+      user: {}
     }
   },
   methods: {
-    registerPage(){
-      this.$router.push('/register')
+    loginPage(){
+      this.$router.push('/')
     },
-    login(){
-      this.$http.post('http://localhost:8000/api/auth/login', this.user).then(res => {
-        localStorage.setItem('access_token', res.data.access_token);
-        console.log(res);
-        this.$router.push('/transaction');
+    createAccount(){
+      this.$http.post('http://localhost:8000/api/auth/register', this.user).then(res=>{
+        console.log(res);  
       });
     }
   },
