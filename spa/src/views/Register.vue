@@ -16,11 +16,6 @@
 
         <button @click="createAccount()">Create an account</button>
       </div>
-
-      <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn">Cancel</button>
-        <span class="psw">Forgot password?</span>
-      </div>
     </div>
     <button @click="loginPage()" >Login</button>
     </div>
@@ -39,7 +34,8 @@ export default {
     },
     createAccount(){
       this.$http.post('http://localhost:8000/api/auth/register', this.user).then(res=>{
-        console.log(res);  
+        console.log(res);
+        this.$router.push('/login'); 
       });
     }
   },

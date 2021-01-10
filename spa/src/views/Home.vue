@@ -11,10 +11,6 @@
         <button @click="login" type="submit">Login</button>
         <button @click="registerPage()">Register</button>
       </div>
-
-      <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn">Cancel</button>
-      </div>
     </div>
   </div>
 </template>
