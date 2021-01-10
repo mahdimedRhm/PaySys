@@ -32,5 +32,6 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::get('test', 'AuthController@test');
+    Route::post('card', 'AuthController@addCard');
 
 });

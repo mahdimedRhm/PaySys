@@ -14,5 +14,8 @@ class Card extends Model
         'code',
     ];
 
-    
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }
