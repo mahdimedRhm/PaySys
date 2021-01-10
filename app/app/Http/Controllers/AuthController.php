@@ -6,15 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Card;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
     //Register 
     public function register(Request $request){
-        $user = new User();
-        $user->password = Hash::make($request->all());
-        $user->save();
+        $user = $request->all();
+        $user['password'] = Hash::make($request->password);
+        User::create($user);        
         return $user;
     }
     public function test(){
@@ -93,5 +95,27 @@ class AuthController extends Controller
     public function guard()
     {
         return Auth::guard();
+    }
+
+    public function addCard(){
+        $user = Auth::user() ?: null;
+        if (!$user){
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        if ($user->card){
+            return response()->json(['error' => 'You have a card'], 401);
+        }
+
+        $card = Card::create($this->generateCard());
+
+        $card->user()->save($user);
+    }
+
+    private function generateCard(){
+        return [
+            'key'  => str_pad(rand(0, pow(10, 3)-1), 3, '0', STR_PAD_LEFT),
+            'code' => (string) Carbon::now()->timestamp
+        ];
     }
 }
