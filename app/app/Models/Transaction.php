@@ -10,18 +10,8 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'key',
-        'code',
+        'from',
+        'to',
     ];
 
-    public function sender()
-    {
-        return $this->hasOne(User::class);
-    }
-
-    public function receiver()
-    {
-        return $this->hasOne(User::class);
-    }
-    
 }
