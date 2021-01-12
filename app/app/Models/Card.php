@@ -12,6 +12,7 @@ class Card extends Model
     protected $fillable = [
         'key',
         'code',
+        'amount'
     ];
 
     public function user()

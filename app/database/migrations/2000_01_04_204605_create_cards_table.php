@@ -17,6 +17,7 @@ class CreateCardsTable extends Migration
             $table->id();
             $table->string('key');
             $table->string('code');
+            $table->float('amount');
             $table->timestamps();
         });
     }
