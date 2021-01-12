@@ -7,16 +7,19 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Card;
+use App\Models\Rsakey;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
-    //Register 
+    //Register
     public function register(Request $request){
         $user = $request->all();
         $user['password'] = Hash::make($request->password);
-        User::create($user);        
+        User::create($user);
+
         return $user;
     }
     public function test(){
@@ -107,15 +110,47 @@ class AuthController extends Controller
             return response()->json(['error' => 'You have a card'], 401);
         }
 
-        $card = Card::create($this->generateCard());
+        $keys = $this->generateRSAKeys();
+        $rsapubkey = Rsakey::create(['key' => $keys['pub']]);
+        $rsapubkey->user()->save($user);
+        Storage::disk('local')->put('/rsa/'.$user->id . 'rsakey', $keys['prv']);
 
+        $card = Card::create($this->generateCard());
         $card->user()->save($user);
+
+
+        return $card;
     }
 
     private function generateCard(){
         return [
-            'key'  => str_pad(rand(0, pow(10, 3)-1), 3, '0', STR_PAD_LEFT),
-            'code' => (string) Carbon::now()->timestamp
+            'key'   => str_pad(rand(0, pow(10, 3)-1), 3, '0', STR_PAD_LEFT),
+            'code'  => (string) Carbon::now()->timestamp,
+            'amount'=> 0.0
         ];
+    }
+
+    private function generateRSAKeys(){
+        $config = array(
+            "digest_alg" => "sha512",
+            "private_key_bits" => 2048,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+        );
+
+        // Create the keypair
+        $res=openssl_pkey_new($config);
+
+        // Get private key
+        openssl_pkey_export($res, $privkey);
+
+        // Get public key
+        $pubkey=openssl_pkey_get_details($res);
+        $pubkey=$pubkey["key"];
+
+        return [
+            "pub" => $pubkey,
+            "prv" => $privkey
+        ];
+
     }
 }
