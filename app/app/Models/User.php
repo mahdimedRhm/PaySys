@@ -67,4 +67,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Card::class);
     }
+
+    public function rsakey()
+    {
+        return $this->belongsTo(Rsakey::class);
+    }
 }
