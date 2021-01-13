@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div action="action_page.php" method="post">
+    <div  method="post">
       <div class="container">
         <label for="uname"><b>Email</b></label>
         <input type="text" placeholder="Enter email" v-model="user.email"  required>
@@ -18,7 +18,7 @@
       </div>
     </div>
     <button @click="loginPage()" >Login</button>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -35,7 +35,7 @@ export default {
     createAccount(){
       this.$http.post('http://localhost:8000/api/auth/register', this.user).then(res=>{
         console.log(res);
-        this.$router.push('/login'); 
+        this.$router.push('/'); 
       });
     }
   },
