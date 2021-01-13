@@ -82,7 +82,7 @@ export default {
             });
         },
         sendMoney(){
-            this.$http.get('http://localhost:8000/api/auth/pubkey', 
+            this.$http.get('http://localhost:8000/api/transaction/pubkey', 
                 {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("access_token")}` 
@@ -91,7 +91,7 @@ export default {
                 this.pubKey = res.data;
                 if (!this.pubKey) return; 
                 this.encryptData();
-                this.$http.post('http://localhost:8000/api/auth/transaction', 
+                this.$http.post('http://localhost:8000/api/transaction/', 
                     {
                         from: this.from,
                         to: this.to,
