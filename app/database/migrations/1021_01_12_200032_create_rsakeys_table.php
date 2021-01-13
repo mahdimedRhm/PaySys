@@ -15,7 +15,7 @@ class CreateRsakeysTable extends Migration
     {
         Schema::create('rsakeys', function (Blueprint $table) {
             $table->id();
-            $table->string('key', 1000);
+            $table->string('key', 10000);
             $table->timestamps();
         });
     }
