@@ -33,5 +33,7 @@ Route::group([
     Route::post('me', 'AuthController@me');
     Route::get('test', 'AuthController@test');
     Route::post('card', 'AuthController@addCard');
+    Route::post('transaction', 'AuthController@addTransaction');
+    Route::get('pubkey', 'AuthController@getPubKey');
 
 });
