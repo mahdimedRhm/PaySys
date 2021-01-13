@@ -71,7 +71,7 @@ export default {
             })
         },
         addCard(){
-            this.$http.post('http://localhost:8000/api/auth/card',
+            this.$http.post('http://localhost:8000/api/card',
             {},
             {
                 headers: {
