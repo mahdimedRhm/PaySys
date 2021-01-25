@@ -3,16 +3,18 @@
     <div  method="post">
       <div class="container">
         <label for="uname"><b>Email</b></label>
-        <input type="text" placeholder="Enter email" v-model="user.email"  required>
+        <input type="text" placeholder="Enter email" v-model="user.email" >
 
         <label for="uname"><b>Name</b></label>
-        <input type="text" placeholder="Enter Name" v-model="user.name" required>
+        <input type="text" placeholder="Enter Name" v-model="user.name">
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter password" v-model="user.password" required>
+        <input type="password" placeholder="Enter password" v-model="user.password">
 
         <label for="psw"><b>Confirm password</b></label>
-        <input type="password" placeholder="Enter password"  required>
+        <input type="password" placeholder="Enter password" v-model="user.password_confirmation" >
+
+        <span v-if="error" style="color: red;"> {{errorMesage}} </span>
 
         <button @click="createAccount()">Create an account</button>
       </div>
@@ -25,7 +27,10 @@
 export default {
   data() {
     return {
-      user: {}
+      user: {},
+      errorMesage:'',
+      error: false
+
     }
   },
   methods: {
@@ -33,11 +38,41 @@ export default {
       this.$router.push('/')
     },
     createAccount(){
+      this.error = false;
+      this.errorMesage = "";
+      this.validate();
+      if (this.error) {
+        return;
+      }
       this.$http.post('http://localhost:8000/api/auth/register', this.user).then(res=>{
         console.log(res);
         this.$router.push('/'); 
       });
+    },
+    isValidEmail(value) {
+      let pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return pattern.test(value);
+    },
+    validate(){
+      if (!this.isValidEmail(this.user.email) ){
+        this.errorMesage = "please check email";
+        this.error = true;
+        return;
+      }
+      if (!this.user.name || !this.user.password){
+        this.errorMesage = "please check name or password";
+        this.error = true;
+        return;
+      }
+      if ((this.user.password_confirmation != this.user.password)){
+        this.errorMesage = "please check password confirmation";
+        this.error = true;
+        return;
+      }
     }
+  },
+  computed: {
+    
   },
 }
 </script>

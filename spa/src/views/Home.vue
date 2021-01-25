@@ -7,6 +7,8 @@
 
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" v-model="user.password" required>
+        
+        <span v-if="error" style="color: red;"> {{errorMessage}} </span>
 
         <button @click="login" type="submit">Login</button>
         <button @click="registerPage()">Register</button>
@@ -21,7 +23,9 @@ export default {
   name: 'Home',
   data() {
     return {
-      user:{}
+      user:{},
+      error: false,
+      errorMessage: ""
     }
   },
   methods: {
@@ -29,11 +33,36 @@ export default {
       this.$router.push('/register')
     },
     login(){
+      this.error = false;
+      this.errorMessage = "";
+
+      this.validate()
+      if (this.error) return;
       this.$http.post('http://localhost:8000/api/auth/login', this.user).then(res => {
         localStorage.setItem('access_token', res.data.access_token);
         console.log(res);
         this.$router.push('/transaction');
+      }, error => {
+        this.errorMessage = "unauthorized";
+        this.error = true;
+
       });
+    },
+    isValidEmail(value) {
+      let pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return pattern.test(value);
+    },
+    validate(){
+      if (!this.isValidEmail(this.user.email) ){
+        this.errorMessage = "please check email";
+        this.error = true;
+        return;
+      }
+      if (!this.user.password){
+        this.errorMessage = "please check password";
+        this.error = true;
+        return;
+      }
     }
   },
 }

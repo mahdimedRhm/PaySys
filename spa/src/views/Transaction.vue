@@ -1,6 +1,6 @@
 <template>
   <div> 
-    <button @click="addCard"  >Get a card</button>
+    <button @click="addCard" v-if="!user.card_id" >Get a card</button>
     <div v-if="card.code">
         your card number: {{card.code}}  
         your key: {{card.key}}
@@ -24,6 +24,8 @@
             <label ><b>amount:</b></label>
             <input type="number"  v-model="amount"><br/>
 
+            <span v-if="error" style="color: red;"> {{errorMessage}} </span>
+
             <button @click="sendMoney()">Send</button>
         </div>
     </div>
@@ -43,8 +45,10 @@ export default {
             },
             from:{},
             to:{},
-            amount: 0,
-            pubKey:""
+            amount: null,
+            pubKey:"",
+            error: false,
+            errorMessage: ''
         }
     },
     mounted() {
@@ -82,6 +86,13 @@ export default {
             });
         },
         sendMoney(){
+            this.error = false;
+            this.errorMessage = '';
+            this.validate();
+            if (this.error){
+                return;
+            }
+
             this.$http.get('http://localhost:8000/api/transaction/pubkey', 
                 {
                 headers: {
@@ -104,12 +115,31 @@ export default {
                     }
                 }).then(res => {
                     console.log('sent');
+                }).catch(err => {
+                    this.errorMessage = err.response.data.error;
+                    this.error = true;
                 })
             })
-
-            
-            
-            
+        },
+        validate(){
+            if (!this.from.code) {
+                this.error = true;
+            }
+            if (!this.from.key) {
+                this.error = true;
+            }
+            if (!this.to.code) {
+                this.error = true;
+            }
+            if (!this.to.key) {
+                this.error = true;
+            }
+            if (!this.amount || this.amount <= 0) {
+                this.error = true;
+            }
+            if (this.error){
+                this.errorMessage = "check fields";
+            }
         },
         encryptData(){
             let encryptor = new JSEncrypt();
