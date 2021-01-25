@@ -25,10 +25,13 @@ Route::group(['middleware' => 'api', 'namespace' => 'App\Http\Controllers' ], fu
         Route::post('refresh', 'AuthController@refresh');
         Route::post('me', 'AuthController@me');
         Route::get('test', 'AuthController@test');
-        Route::post('transaction', 'AuthController@addTransaction');
-        Route::get('pubkey', 'AuthController@getPubKey');
     });
 
     Route::post('card', 'CardController@addCard');
+
+    Route::group(['prefix' => 'transaction'], function ($router) {
+        Route::post('/', 'TransactionController@addTransaction');
+        Route::get('pubkey', 'TransactionController@getPubKey');
+    });
 
 });
