@@ -45,7 +45,7 @@ class CardController extends Controller
         return [
             'key'   => str_pad(rand(0, pow(10, 3)-1), 3, '0', STR_PAD_LEFT),
             'code'  => (string) Carbon::now()->timestamp,
-            'amount'=> 0.0
+            'amount'=> 1000.0
         ];
     }
 
