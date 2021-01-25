@@ -30,4 +30,12 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.name == 'Home' && localStorage.getItem('access_token')) next({ name: 'Transaction' })
+  if (to.name == 'Register' && localStorage.getItem('access_token')) next({ name: 'Transaction' })
+  if (to.name == 'Transaction' && !localStorage.getItem('access_token')) next({ name: 'Home' })
+
+  // if the user is not authenticated, `next` is called twice
+  next()
+})
 export default router
